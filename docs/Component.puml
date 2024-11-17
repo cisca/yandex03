@@ -1,0 +1,111 @@
+@startuml
+title FitLife Web Application Component Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Container(users, "User Microservice", "Java") {
+  Component(UserComponent, "UserComponent", "Управление пользователями")
+  Component(HouseComponent, "HouseComponent", "Управление домами")
+  Component(UsersApiComponent, "UsersApiComponent", "API сервиса")
+  ComponentDb(users_db, "Database")
+}
+
+Rel(UsersApiComponent,UserComponent,"Calls users logic")
+Rel(UsersApiComponent,HouseComponent,"Calls houses logic")
+Rel(UserComponent,users_db,"Reads/Writes data")
+Rel(HouseComponent,users_db,"Reads/Writes data")
+
+Container(auth, "Sessions Microservice", "NodeJS") {
+  Component(AuthComponent, "AuthComponent", "Аутентификация и хранение сессий")
+  Component(AclComponent, "AclComponent", "Авторизация")
+  Component(AuthApiComponent, "AuthApiComponent", "API сервиса")
+  ComponentDb(auth_db, "Database")
+}
+
+Rel(AuthApiComponent,AuthComponent,"Calls authentication logic")
+Rel(AuthApiComponent,AclComponent,"Calls authorization logic")
+Rel(AuthComponent,auth_db,"Reads/Writes data")
+Rel(AclComponent,auth_db,"Reads/Writes data")
+
+Container(sensors, "Sensors Microservice", "Java") {
+  Component(SensorsComponent, "SensorsComponent", "Управление датчиками")
+  Component(SensorsLibraryComponent, "SensorsLibraryComponent", "Библитека доступных функциональностей датчиков")
+  Component(VendorsComponent, "VendorsComponent", "Реестр производителей")
+  Component(VersionsComponent, "VersionsComponent", "Управление версионностью API")
+  Component(SensorsApiComponent, "SensorsApiComponent", "API сервиса")
+  ComponentDb(sensors_db, "Database")
+}
+
+Container(personal, "Personal Settings Microservice", "Java") {
+  Component(SensorRegisteredComponent, "SensorRegisteredComponent", "Регистрация датчиков в системе")
+  Component(SettingComponent, "SettingComponent", "Персональные настройки пользователя")
+  Component(PersonalApiComponent, "PersonalApiComponent", "API сервиса")
+  ComponentDb(personal_db, "Database")
+}
+
+Container(reports, "Report Microservice", "Java") {
+  Component(LogComponent, "LogComponent", "Управление логами")
+  Component(RequestComponent, "RequestComponent", "Управление заявками на выдачу отчетов")
+  Component(ScheduleComponent, "ScheduleComponent", "Управление расписанием отчетов")
+  Component(ReportComponent, "ReportComponent", "Бизнес-логика формирования отчетов")
+  Component(ReportApiComponent, "ReportApiComponent", "API сервиса")
+  ComponentDb(reports_db, "Database")
+}
+
+Container(notification, "Notification Microservice", "NodeJS") {
+  Component(NotificationComponent, "NotificationComponent", "Типы уведомлений")
+  Component(QueueComponent, "QueueComponent", "Компонент управления очередью уведомлений")
+  Component(NotificationApiComponent, "NotificationApiComponent", "API сервиса")
+  ComponentDb(notification_db, "Database")
+}
+
+Container(payments, "Payments Microservice", "Java") {
+  Component(BillComponent, "BillComponent", "Управление счетами")
+  Component(TariffComponent, "TariffComponent", "Тарификатор")
+  Component(PaymentComponent, "PaymentComponent", "Управление оплатами")
+  Component(PaymentIntegrationComponent, "PaymentIntegrationComponent", "Интеграция с ПС")
+  Component(PaymentApiComponent, "PaymentApiComponent", "API сервиса")
+  ComponentDb(payment_db, "Database")
+}
+
+Rel(PaymentApiComponent,BillComponent,"Calls bills logic")
+Rel(PaymentApiComponent,TariffComponent,"Calls tariff logic")
+Rel(PaymentApiComponent,PaymentIntegrationComponent,"Calls payments system logic")
+Rel(PaymentApiComponent,PaymentComponent,"Calls payments logic")
+Rel(BillComponent,payment_db,"Reads/Writes data")
+Rel(TariffComponent,payment_db,"Reads/Writes data")
+Rel(PaymentIntegrationComponent,payment_db,"Reads/Writes data")
+Rel(PaymentComponent,payment_db,"Reads/Writes data")
+
+Rel(NotificationApiComponent,NotificationComponent,"Calls notifications logic")
+Rel(NotificationApiComponent,QueueComponent,"Calls queue logic")
+Rel(NotificationComponent,notification_db,"Reads/Writes data")
+Rel(QueueComponent,notification_db,"Reads/Writes data")
+
+Rel(ReportApiComponent,LogComponent,"Calls logs logic")
+Rel(ReportApiComponent,RequestComponent,"Calls requests logic")
+Rel(ReportApiComponent,ScheduleComponent,"Calls schedule logic")
+Rel(ReportApiComponent,ReportComponent,"Calls reports logic")
+Rel(LogComponent,reports_db,"Reads/Writes data")
+Rel(RequestComponent,reports_db,"Reads/Writes data")
+Rel(ScheduleComponent,reports_db,"Reads/Writes data")
+Rel(ReportComponent,reports_db,"Reads/Writes data")
+
+Rel(PersonalApiComponent,SensorRegisteredComponent,"Calls registrations logic")
+Rel(PersonalApiComponent,SettingComponent,"Calls settings logic")
+Rel(SensorRegisteredComponent,personal_db,"Reads/Writes data")
+Rel(SettingComponent,personal_db,"Reads/Writes data")
+
+
+Rel(SensorsApiComponent,SensorsComponent,"Calls sensors logic")
+Rel(SensorsApiComponent,SensorsLibraryComponent,"Calls sensor's functionality logic")
+Rel(SensorsApiComponent,VendorsComponent,"Calls vendors logic")
+Rel(SensorsApiComponent,VersionsComponent,"Calls versions logic")
+Rel(SensorsComponent,sensors_db,"Reads/Writes data")
+Rel(SensorsLibraryComponent,sensors_db,"Reads/Writes data")
+Rel(VendorsComponent,sensors_db,"Reads/Writes data")
+Rel(VersionsComponent,sensors_db,"Reads/Writes data")
+
+@enduml
