@@ -5,6 +5,10 @@ top to bottom direction
 
 !includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
 
+Container_Boundary(backend, "Message broker") {
+    Container(kafka, "Kafka", "Message broker")
+}
+
 Container(users, "User Microservice", "Java") {
   Component(UserComponent, "UserComponent", "Управление пользователями")
   Component(HouseComponent, "HouseComponent", "Управление домами")
@@ -107,5 +111,13 @@ Rel(SensorsComponent,sensors_db,"Reads/Writes data")
 Rel(SensorsLibraryComponent,sensors_db,"Reads/Writes data")
 Rel(VendorsComponent,sensors_db,"Reads/Writes data")
 Rel(VersionsComponent,sensors_db,"Reads/Writes data")
+
+Rel(kafka, UsersApiComponent, "")
+Rel(kafka, AuthApiComponent, "")
+Rel(kafka, SensorsApiComponent, "")
+Rel(kafka, PersonalApiComponent, "")
+Rel(kafka, NotificationApiComponent, "")
+Rel(kafka, PaymentApiComponent, "")
+Rel(kafka, ReportApiComponent, "")
 
 @enduml

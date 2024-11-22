@@ -41,7 +41,15 @@ System_Ext(sensor, "Датчики температуры", "Отправляю�
 System_Ext(heater, "Центральный контроллер системы обогрева", "Поднимает или понижает температуру в конкретном доме")
 System_Ext(paymentSystem, "Платежная система", "Эквайринг для оплаты счетов")
 
-Rel(gateway,kafka,"")
+Rel(gateway,users,"")
+Rel(gateway,auth,"")
+Rel(gateway,sensors,"")
+Rel(gateway,personal,"")
+Rel(gateway,payments,"")
+Rel(gateway,report,"")
+Rel(gateway,notification,"")
+
+
 Rel(kafka,users,"")
 Rel(kafka,auth,"")
 Rel(kafka,sensors,"")
