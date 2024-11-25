@@ -1,0 +1,81 @@
+@startuml
+@startuml
+' hide the spot
+' hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "User" as e01 {
+  *id : number <<generated>>
+  --
+  *firstName : string
+  *lastName : string
+  *password : string
+  *email : string
+  *phone : string
+  *createdAt : date
+  comment : text
+}
+
+entity "Houses" as e02 {
+  *id : number <<generated>>
+  --
+  *address : string
+  comment : text
+}
+
+entity "UsersHouses" as e03 {
+  *id : number <<generated>>
+  --
+  *houseId : number <<FK>>
+  *userId : <<FK>>
+  *createdAt: data
+}
+
+entity "Vendors" as e04 {
+  *id : number <<generated>>
+  --
+  *name : string
+}
+
+entity "Sensors" as e05 {
+  *id : number <<generated>>
+  --
+  *vendorId : number <<FK>>
+  *model : string
+  comment : text
+}
+
+entity "Function" as e06 {
+  *id : number <<generated>>
+  --
+  *name : string
+  options : json
+}
+
+entity "Version" as e07 {
+  *id : number <<generated>>
+  --
+  *sensorId : number <<FK>>
+  *functionId : number <<FK>>
+}
+
+entity "SensorRegistered" as e08 {
+  *id : number <<generated>>
+  --
+  *versionId : number <<FK>>
+  *houseId : number <<FK>>
+  settings : json
+}
+
+e01 ..|{ e03
+e02 ..|{ e03
+e05 |o.. e04
+e06 ..o| e07
+e05 ..o| e07
+e02 ..|{ e08
+e07 ..|{ e08
+
+@enduml
+

@@ -1,0 +1,66 @@
+@startuml
+title Sensors Code Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+class Vendors {
+  +String brand
+  +void add()
+  +void update()
+}
+
+class Sensor {
+  +Integer vendorId
+  +Date startProduces
+  +String model
+  +Integer applicationType
+  +void callFunction()
+  +void add()
+}
+
+class SensorFunction {
+  +Integer sensorId
+  +String functionalityName
+  +Array settings
+  +void register()
+  +void call()
+}
+
+class Versions {
+  +Integer versionNumber
+  +Integer sensorId
+  +Integer functionId
+  +Date activeFrom
+  +Date activeTo
+  +void add()
+  +void update()
+}
+
+class SensorRegistered {
+   +Integer sensorId
+   +Date registeredDate
+   +Boolean isActive
+   +Integer houseId
+   +void register()
+   +void activate()
+   +void deactivate()
+}
+
+class Settings {
+  +Integer sensorRegisteredId
+  +Json Settings
+  +String SensorFunction
+  +void create()
+  +void update()
+  +void deactivate()
+}
+
+Sensor -- Vendors : has
+Versions -- Sensor : has
+Versions -- SensorFunction : has
+
+SensorRegistered -- Settings : include
+
+@enduml

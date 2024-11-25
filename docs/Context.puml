@@ -1,0 +1,21 @@
+@startuml
+title Тёплый дом Context Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "Пользователь системы Теплый дом")
+Person(admin, "Administrator", "Команда по обслуживанию клиентов")
+System(System, "Тёплый дом Monolit", "Монолитная система")
+
+System_Ext(sensor, "Датчики температуры", "Отправляют информацию в систему")
+System_Ext(heater, "Центральный контроллер системы обогрева", "Поднимает или понижает температуру в конкретном доме")
+
+Rel(user, System, "Управляет отоплением")
+Rel(System, user, "Проверяет температуру")
+Rel(System, admin, "Получает сводную информацию")
+Rel(sensor, System, "Передача данных в систему")
+Rel(System, heater, "Передача новых данных на домашний контроллер")
+
+@enduml

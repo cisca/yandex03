@@ -1,0 +1,150 @@
+@startuml
+title FitLife Web Application Component Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(backend, "Message broker") {
+    Container(kafka, "Kafka", "Message broker")
+}
+
+Container(users, "User Microservice", "Java") {
+  Component(UserComponent, "UserComponent", "Управление пользователями")
+  Component(UsersDispatcher, "UsersDispatcher", "Диспетчер событий")
+  Component(HouseComponent, "HouseComponent", "Управление домами")
+  Component(UsersApiComponent, "UsersApiComponent", "API сервиса")
+  ComponentDb(users_db, "Database")
+}
+
+Rel(UsersApiComponent,UserComponent,"Calls users logic")
+Rel(UsersApiComponent,HouseComponent,"Calls houses logic")
+Rel(UsersDispatcher,UserComponent,"Calls users logic")
+Rel(UsersDispatcher,HouseComponent,"Calls houses logic")
+Rel(UserComponent,users_db,"Reads/Writes data")
+Rel(HouseComponent,users_db,"Reads/Writes data")
+
+Container(auth, "Sessions Microservice", "NodeJS") {
+  Component(AuthComponent, "AuthComponent", "Аутентификация и хранение сессий")
+  Component(AclComponent, "AclComponent", "Авторизация")
+  Component(AuthDispatcher, "AuthDispatcher", "Диспетчер событий")
+  Component(AuthApiComponent, "AuthApiComponent", "API сервиса")
+  ComponentDb(auth_db, "Database")
+}
+
+Rel(AuthApiComponent,AuthComponent,"Calls authentication logic")
+Rel(AuthApiComponent,AclComponent,"Calls authorization logic")
+Rel(AuthDispatcher,AuthComponent,"Calls authentication logic")
+Rel(AuthDispatcher,AclComponent,"Calls authorization logic")
+Rel(AuthComponent,auth_db,"Reads/Writes data")
+Rel(AclComponent,auth_db,"Reads/Writes data")
+
+Container(sensors, "Sensors Microservice", "Java") {
+  Component(SensorsComponent, "SensorsComponent", "Управление датчиками")
+  Component(SensorsLibraryComponent, "SensorsLibraryComponent", "Библитека доступных функциональностей датчиков")
+  Component(VendorsComponent, "VendorsComponent", "Реестр производителей")
+  Component(VersionsComponent, "VersionsComponent", "Управление версионностью API")
+  Component(SensorsApiComponent, "SensorsApiComponent", "API сервиса")
+  Component(SensorDispatcher, "SensorDispatcher", "Диспетчер событий")
+  ComponentDb(sensors_db, "Database")
+}
+
+Rel(SensorsApiComponent,SensorsComponent,"Calls sensors logic")
+Rel(SensorsApiComponent,SensorsLibraryComponent,"Calls sensor's functionality logic")
+Rel(SensorsApiComponent,VendorsComponent,"Calls vendors logic")
+Rel(SensorsApiComponent,VersionsComponent,"Calls versions logic")
+Rel(SensorDispatcher,SensorsComponent,"Calls sensors logic")
+Rel(SensorDispatcher,SensorsLibraryComponent,"Calls sensor's functionality logic")
+Rel(SensorDispatcher,VendorsComponent,"Calls vendors logic")
+Rel(SensorDispatcher,VersionsComponent,"Calls versions logic")
+Rel(SensorsComponent,sensors_db,"Reads/Writes data")
+Rel(SensorsLibraryComponent,sensors_db,"Reads/Writes data")
+Rel(VendorsComponent,sensors_db,"Reads/Writes data")
+Rel(VersionsComponent,sensors_db,"Reads/Writes data")
+
+Container(personal, "Personal Settings Microservice", "Java") {
+  Component(SensorRegisteredComponent, "SensorRegisteredComponent", "Регистрация датчиков в системе")
+  Component(SettingComponent, "SettingComponent", "Персональные настройки пользователя")
+  Component(PersonalApiComponent, "PersonalApiComponent", "API сервиса")
+  Component(PersonalDispatcher, "PersonalDispatcher", "Диспетчер событий")
+  ComponentDb(personal_db, "Database")
+}
+
+Rel(PersonalApiComponent,SensorRegisteredComponent,"Calls registrations logic")
+Rel(PersonalApiComponent,SettingComponent,"Calls settings logic")
+Rel(PersonalDispatcher,SensorRegisteredComponent,"Calls registrations logic")
+Rel(PersonalDispatcher,SettingComponent,"Calls settings logic")
+Rel(SensorRegisteredComponent,personal_db,"Reads/Writes data")
+Rel(SettingComponent,personal_db,"Reads/Writes data")
+
+Container(reports, "Report Microservice", "Java") {
+  Component(LogComponent, "LogComponent", "Управление логами")
+  Component(RequestComponent, "RequestComponent", "Управление заявками на выдачу отчетов")
+  Component(ScheduleComponent, "ScheduleComponent", "Управление расписанием отчетов")
+  Component(ReportComponent, "ReportComponent", "Бизнес-логика формирования отчетов")
+  Component(ReportApiComponent, "ReportApiComponent", "API сервиса")
+  Component(ReportDispatcher, "ReportDispatcher", "Диспетчер событий")
+  ComponentDb(reports_db, "Database")
+}
+
+Rel(ReportApiComponent,LogComponent,"Calls logs logic")
+Rel(ReportApiComponent,RequestComponent,"Calls requests logic")
+Rel(ReportApiComponent,ScheduleComponent,"Calls schedule logic")
+Rel(ReportApiComponent,ReportComponent,"Calls reports logic")
+Rel(ReportDispatcher,LogComponent,"Calls logs logic")
+Rel(ReportDispatcher,RequestComponent,"Calls requests logic")
+Rel(ReportDispatcher,ScheduleComponent,"Calls schedule logic")
+Rel(ReportDispatcher,ReportComponent,"Calls reports logic")
+Rel(LogComponent,reports_db,"Reads/Writes data")
+Rel(RequestComponent,reports_db,"Reads/Writes data")
+Rel(ScheduleComponent,reports_db,"Reads/Writes data")
+Rel(ReportComponent,reports_db,"Reads/Writes data")
+
+Container(notification, "Notification Microservice", "NodeJS") {
+  Component(NotificationComponent, "NotificationComponent", "Типы уведомлений")
+  Component(QueueComponent, "QueueComponent", "Компонент управления очередью уведомлений")
+  Component(NotificationApiComponent, "NotificationApiComponent", "API сервиса")
+  Component(NotificationDispatcher, "ReportDispatcher", "Диспетчер событий")
+  ComponentDb(notification_db, "Database")
+}
+
+Rel(NotificationApiComponent,NotificationComponent,"Calls notifications logic")
+Rel(NotificationApiComponent,QueueComponent,"Calls queue logic")
+Rel(NotificationDispatcher,NotificationComponent,"Calls notifications logic")
+Rel(NotificationDispatcher,QueueComponent,"Calls queue logic")
+Rel(NotificationComponent,notification_db,"Reads/Writes data")
+Rel(QueueComponent,notification_db,"Reads/Writes data")
+
+Container(payments, "Payments Microservice", "Java") {
+  Component(BillComponent, "BillComponent", "Управление счетами")
+  Component(TariffComponent, "TariffComponent", "Тарификатор")
+  Component(PaymentComponent, "PaymentComponent", "Управление оплатами")
+  Component(PaymentIntegrationComponent, "PaymentIntegrationComponent", "Интеграция с ПС")
+  Component(PaymentApiComponent, "PaymentApiComponent", "API сервиса")
+  Component(PaymentDispatcher, "PaymentDispatcher", "Диспетчер событий")
+  ComponentDb(payment_db, "Database")
+}
+
+Rel(PaymentApiComponent,BillComponent,"Calls bills logic")
+Rel(PaymentApiComponent,TariffComponent,"Calls tariff logic")
+Rel(PaymentApiComponent,PaymentIntegrationComponent,"Calls payments system logic")
+Rel(PaymentApiComponent,PaymentComponent,"Calls payments logic")
+Rel(PaymentDispatcher,BillComponent,"Calls bills logic")
+Rel(PaymentDispatcher,TariffComponent,"Calls tariff logic")
+Rel(PaymentDispatcher,PaymentIntegrationComponent,"Calls payments system logic")
+Rel(PaymentDispatcher,PaymentComponent,"Calls payments logic")
+Rel(BillComponent,payment_db,"Reads/Writes data")
+Rel(TariffComponent,payment_db,"Reads/Writes data")
+Rel(PaymentIntegrationComponent,payment_db,"Reads/Writes data")
+Rel(PaymentComponent,payment_db,"Reads/Writes data")
+
+
+Rel(kafka, UsersDispatcher, "")
+Rel(kafka, AuthDispatcher, "")
+Rel(kafka, SensorDispatcher, "")
+Rel(kafka, PersonalDispatcher, "")
+Rel(kafka, NotificationDispatcher, "")
+Rel(kafka, PaymentDispatcher, "")
+Rel(kafka, ReportDispatcher, "")
+
+@enduml
